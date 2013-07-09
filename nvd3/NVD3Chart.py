@@ -62,6 +62,8 @@ class NVD3Chart:
         * ``charttooltip`` - Custom tooltip string
         * ``header_css`` - False / True
         * ``header_js`` - Custom tooltip string
+        * ``chart_pre_js`` - Extra javascript to put before the graph is defined)
+        * ``chart_post_js`` - Extra javascript to put after the graph is defined)
         * ``color_category`` - Defien color category (eg. category10, category20, category20c)
         * ``color_list`` - used by pieChart (eg. ['red', 'blue', 'orange'])
         * ``charttooltip_dateformat`` - date fromat for tooltip if x-axis is in date format
@@ -94,6 +96,8 @@ class NVD3Chart:
     charttooltip_dateformat = None
     x_axis_format = ''
     show_legend = True
+    chart_pre_js = None
+    chart_post_js = None
 
     def __init__(self, name=None, color_category=None, **kwargs):
         """
@@ -132,6 +136,9 @@ class NVD3Chart:
             '<script src="%s" type="text/javascript"></script>\n' % h for h in
                         ('http://nvd3.org/lib/d3.v2.js', 'http://nvd3.org/nv.d3.js')
         ]
+
+        self.chart_pre_js = []
+        self.chart_post_js = []
 
     def add_serie(self, y, x, name=None, extra={}, **kwargs):
         """
@@ -325,7 +332,11 @@ class NVD3Chart:
         self.jschart = ''
         if self.tag_script_js:
             self.jschart += '\n<script type="text/javascript">\n'
+
         self.jschart += stab() + 'nv.addGraph(function() {\n'
+
+        for b in self.chart_pre_js:
+            self.jschart += b + '\n'
 
         self.jschart += stab(2) + 'var chart = nv.models.%s();\n' % self.model
 
@@ -376,8 +387,12 @@ class NVD3Chart:
             stab(3) + self.d3_select_extra + \
             stab(3) + ".call(chart);\n\n"
 
+        for b in self.chart_post_js:
+            self.jschart += b + '\n'
+
         if self.resize:
             self.jschart += stab(1) + "nv.utils.windowResize(chart.update);\n"
+
         self.jschart += stab(1) + "return chart;\n});\n"
 
         #Include data

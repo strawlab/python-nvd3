@@ -20,6 +20,20 @@ chart = lineChart(date=False,
                   width=500, height=500,
                   show_legend=False)
 
+
+#hacky? way to change the line color on mouse-over. should really be supported in nvd3
+#natively
+#https://github.com/novus/nvd3/issues/182
+chart.chart_post_js.append(r"""
+chart.lines.dispatch.on('elementMouseover.recolor', function(e){
+    d3.select(chart.container).select('g.nv-group.nv-series-' + e.seriesIndex).select('path.nv-line').style('stroke','red')
+  })
+
+chart.lines.dispatch.on('elementMouseout.recolor', function(e){
+    d3.select(chart.container).select('g.nv-group.nv-series-' + e.seriesIndex).select('path.nv-line').style('stroke','')
+  })
+""")
+
 #lissajous parameters of a/b
 a = [1,3,5,3]
 b = [1,5,7,4]
@@ -30,7 +44,7 @@ for i in range(0,4):
     x = sin(a[i] * t + delta)
     y = sin(b[i] * t)
     
-    chart.add_serie(y=y, x=x, name='lissajous-n%d' % i,  color='red' if i == 0 else 'black')
+    chart.add_serie(y=y, x=x, name='lissajous-n%d' % i,  color='black')
 
 chart.buildhtml()
 

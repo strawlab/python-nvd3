@@ -94,19 +94,11 @@ class lineChart(NVD3Chart):
         if width:
             self.set_graph_width(width)
 
-    def buildjschart(self):
-        NVD3Chart.buildjschart(self)
-        am_pm_js = ''
         if self.x_axis_format == 'AM_PM':
+            am_pm_js = ''
             am_pm_js += stab(2) +"function get_am_pm(d){\n";
             am_pm_js += stab(3) + "if(d > 12){ d = d - 12; return (String(d) + 'PM');}\n"
             am_pm_js += stab(3) + "else{ return (String(d) + 'AM');}\n"
             am_pm_js += stab(2) + "};\n"
-
-            start_js = self.jschart.find('nv.addGraph')
-            start_js_len = len('nv.addGraph')
-            replace_index = start_js
-            if start_js > 0:
-                self.jschart = self.jschart[:replace_index] + am_pm_js + self.jschart[replace_index:]
-
+            self.chart_pre_js.append(am_pm_js)
 
