@@ -14,6 +14,9 @@ from string import Template
 import random
 import json
 
+HEADER_CSS = ('http://nvd3.org/assets/css/nv.d3.css',)
+HEADER_JS =  ('http://d3js.org/d3.v2.min.js', 'https://raw.github.com/novus/nvd3/master/nv.d3.min.js')
+
 template_page_nvd3 = """
 <!DOCTYPE html>
 <html lang="en">
@@ -130,11 +133,11 @@ class NVD3Chart:
 
         self.header_css = [
             '<link media="all" href="%s" type="text/css" rel="stylesheet" />\n' % h for h in
-                        ('http://nvd3.org/src/nv.d3.css',)
+                        kwargs.get('header_css', HEADER_CSS)
         ]
         self.header_js = [
             '<script src="%s" type="text/javascript"></script>\n' % h for h in
-                        ('http://nvd3.org/lib/d3.v2.js', 'http://nvd3.org/nv.d3.js')
+                        kwargs.get('header_js', HEADER_JS)
         ]
 
         self.chart_pre_js = []
